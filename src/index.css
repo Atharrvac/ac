@@ -1,0 +1,300 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer base {
+  :root {
+    /* Modern Dark Mode - Eco-friendly dark theme */
+    --background: 224 15% 8%;
+    --foreground: 145 20% 92%;
+
+    --card: 224 15% 10%;
+    --card-foreground: 145 20% 90%;
+
+    --popover: 224 15% 12%;
+    --popover-foreground: 145 20% 88%;
+
+    /* Primary - Bright eco green for dark mode */
+    --primary: 145 75% 55%;
+    --primary-foreground: 224 15% 8%;
+    --primary-hover: 145 75% 60%;
+    --primary-light: 145 60% 15%;
+
+    /* Secondary - Bright tech blue */
+    --secondary: 200 85% 65%;
+    --secondary-foreground: 224 15% 8%;
+    --secondary-hover: 200 85% 70%;
+    --secondary-light: 200 70% 15%;
+
+    /* Accent - Bright teal */
+    --accent: 175 70% 55%;
+    --accent-foreground: 224 15% 8%;
+    --accent-hover: 175 70% 60%;
+    --accent-light: 175 50% 15%;
+
+    /* Rewards - Golden eco-coins */
+    --reward: 45 90% 65%;
+    --reward-foreground: 224 15% 8%;
+    --reward-light: 45 80% 15%;
+
+    /* Status colors for dark mode */
+    --success: 145 75% 55%;
+    --warning: 35 85% 65%;
+    --destructive: 0 75% 65%;
+    --destructive-foreground: 224 15% 8%;
+
+    /* Dark neutrals */
+    --muted: 224 15% 15%;
+    --muted-foreground: 145 10% 65%;
+    --border: 224 15% 20%;
+    --input: 224 15% 16%;
+    --ring: 145 75% 55%;
+
+    --radius: 0.75rem;
+
+    /* Dark mode gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(145, 75%, 55%), hsl(165, 70%, 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(200, 85%, 65%), hsl(220, 75%, 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(145, 75%, 55%) 0%, hsl(175, 70%, 60%) 50%, hsl(200, 85%, 65%) 100%);
+    --gradient-reward: linear-gradient(135deg, hsl(45, 90%, 65%), hsl(55, 85%, 70%));
+    --gradient-card: linear-gradient(145deg, hsla(224, 15%, 12%, 0.8), hsla(224, 15%, 16%, 0.4));
+    --gradient-bg: linear-gradient(135deg, hsl(224, 15%, 8%) 0%, hsl(224, 15%, 10%) 100%);
+
+    /* Enhanced shadows for dark mode */
+    --shadow-soft: 0 4px 20px -4px hsla(0, 0%, 0%, 0.3);
+    --shadow-medium: 0 8px 30px -6px hsla(0, 0%, 0%, 0.4);
+    --shadow-strong: 0 20px 40px -8px hsla(0, 0%, 0%, 0.5);
+    --shadow-glow: 0 0 30px hsla(145, 75%, 55%, 0.4);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Sidebar colors for dark mode */
+    --sidebar-background: 224 15% 6%;
+    --sidebar-foreground: 145 20% 85%;
+    --sidebar-primary: 145 75% 55%;
+    --sidebar-primary-foreground: 224 15% 8%;
+    --sidebar-accent: 224 15% 12%;
+    --sidebar-accent-foreground: 145 20% 80%;
+    --sidebar-border: 224 15% 18%;
+    --sidebar-ring: 145 75% 55%;
+  }
+
+  /* AI-enhanced dark mode variations */
+  .ai-mode {
+    --primary: 145 85% 60%;
+    --secondary: 200 95% 70%;
+    --accent: 175 80% 60%;
+    --gradient-hero: linear-gradient(135deg, hsl(145, 85%, 60%) 0%, hsl(175, 80%, 65%) 50%, hsl(200, 95%, 70%) 100%);
+    --shadow-glow: 0 0 40px hsla(145, 85%, 60%, 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: var(--gradient-bg);
+    min-height: 100vh;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced scrollbar for dark mode */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+@layer utilities {
+  /* Gradient utilities */
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .bg-gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+  
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .bg-gradient-reward {
+    background: var(--gradient-reward);
+  }
+  
+  .bg-gradient-card {
+    background: var(--gradient-card);
+    backdrop-filter: blur(20px);
+  }
+
+  /* Shadow utilities */
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .shadow-medium {
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .shadow-strong {
+    box-shadow: var(--shadow-strong);
+  }
+  
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Animation utilities */
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+  
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+
+  /* Eco-coin bounce animation */
+  @keyframes coin-bounce {
+    0%, 20%, 53%, 80%, 100% {
+      transform: translate3d(0,0,0);
+    }
+    40%, 43% {
+      transform: translate3d(0, -30px, 0);
+    }
+    70% {
+      transform: translate3d(0, -15px, 0);
+    }
+    90% {
+      transform: translate3d(0, -4px, 0);
+    }
+  }
+
+  .animate-coin-bounce {
+    animation: coin-bounce 1s ease-in-out;
+  }
+
+  /* Pulse glow animation for AI detection */
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 5px hsla(145, 75%, 42%, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 20px hsla(145, 75%, 42%, 0.8), 0 0 30px hsla(145, 75%, 42%, 0.6);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Enhanced animations for better UX */
+  @keyframes text-shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes slideInFromLeft {
+    0% { transform: translateX(-100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slideInFromRight {
+    0% { transform: translateX(100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slideInFromBottom {
+    0% { transform: translateY(50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes slideInFromTop {
+    0% { transform: translateY(-50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .animate-text-shimmer {
+    background-size: 200% auto;
+    animation: text-shimmer 3s linear infinite;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .slide-in-left {
+    animation: slideInFromLeft 0.6s ease-out;
+  }
+
+  .slide-in-right {
+    animation: slideInFromRight 0.6s ease-out;
+  }
+
+  .slide-in-bottom {
+    animation: slideInFromBottom 0.6s ease-out;
+  }
+
+  .slide-in-top {
+    animation: slideInFromTop 0.6s ease-out;
+  }
+
+  .scale-in {
+    animation: scaleIn 0.5s ease-out;
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .bg-size-200 {
+    background-size: 200% auto;
+  }
+
+  .drop-shadow-glow {
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
+  }
+
+  /* Stagger animation delays */
+  .delay-75 { animation-delay: 75ms; }
+  .delay-100 { animation-delay: 100ms; }
+  .delay-150 { animation-delay: 150ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-500 { animation-delay: 500ms; }
+}
