@@ -97,6 +97,7 @@ export const cn = (...classes: (string | undefined | false | null)[]): string =>
 /**
  * Common responsive patterns as utility functions
  */
+
 export const responsive = {
   // Common container pattern
   container: () => cn(containerPadding.all),
@@ -125,6 +126,7 @@ export const responsive = {
     direction === 'row' ? flexPatterns.stackToRow : 'flex-col'
   ),
   
+  
   // Responsive text
   text: (size: keyof typeof typography) => typography[size],
   
@@ -136,3 +138,6 @@ export const responsive = {
 } as const;
 
 export default responsive;
+
+
+ 
