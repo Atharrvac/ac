@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { Bot, Send, Trash2, ShieldAlert } from 'lucide-react';
+import { Bot, Send, Trash2, ShieldAlert, Loader2 } from 'lucide-react';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 interface Message { id: string; role: 'user' | 'assistant'; content: string; citations?: { title: string; url: string }[] }
 interface Thread { id: string; createdAt: string; messages: Message[] }
@@ -57,12 +58,19 @@ function violatesGuardrails(text: string) {
   return '';
 }
 
+// Initialize Gemini AI with API key from environment
+const getGeminiAI = () => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || 'AIzaSyBqKGXwLqJhLqvvYQxGxQxGxQxGxQxGxQx';
+  return new GoogleGenerativeAI(apiKey);
+};
+
 const Assistant = () => {
   const { user, loading } = useAuth();
   const { toast } = useToast();
   const [threads, setThreads] = useState<Thread[]>(() => loadThreads());
   const [activeId, setActiveId] = useState<string>(() => loadThreads()[0]?.id ?? '');
   const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const endRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => { saveThreads(threads); }, [threads]);
@@ -93,11 +101,13 @@ const Assistant = () => {
     if (activeId === id) setActiveId('');
   };
 
-  const send = () => {
+  const send = async () => {
     const text = input.trim();
-    if (!text) return;
+    if (!text || isTyping) return;
+    
     const violation = violatesGuardrails(text);
     const userMsg: Message = { id: crypto.randomUUID(), role: 'user', content: text };
+    
     if (!active) startThread();
 
     setThreads(prev => {
@@ -117,9 +127,63 @@ const Assistant = () => {
       return;
     }
 
-    const { answer, citations } = findAnswer(text);
-    const bot: Message = { id: crypto.randomUUID(), role: 'assistant', content: answer, citations };
-    setThreads(prev => prev.map(t => t.id === (active?.id ?? prev[0].id) ? { ...t, messages: [...t.messages, bot] } : t));
+    setIsTyping(true);
+
+    try {
+      // Use Gemini AI for intelligent responses
+      const genAI = getGeminiAI();
+      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      
+      const systemPrompt = `You are EcoAssistant, an AI expert in e-waste recycling and environmental sustainability. 
+      Help users with:
+      - Safe disposal of electronic waste (batteries, phones, laptops, etc.)
+      - Data privacy before recycling devices
+      - Environmental impact of e-waste
+      - Recycling best practices
+      - EcoCoins rewards system
+      
+      Keep responses concise, helpful, and focused on e-waste management. Always prioritize safety and environmental responsibility.`;
+      
+      const prompt = `${systemPrompt}\n\nUser question: ${text}`;
+      
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const answer = response.text();
+      
+      // Find relevant citations from knowledge base
+      const { citations } = findAnswer(text);
+      
+      const bot: Message = { 
+        id: crypto.randomUUID(), 
+        role: 'assistant', 
+        content: answer,
+        citations 
+      };
+      
+      setThreads(prev => prev.map(t => t.id === (active?.id ?? prev[0].id) ? { ...t, messages: [...t.messages, bot] } : t));
+      
+    } catch (error) {
+      console.error('AI Error:', error);
+      
+      // Fallback to knowledge base if API fails
+      const { answer, citations } = findAnswer(text);
+      const bot: Message = { 
+        id: crypto.randomUUID(), 
+        role: 'assistant', 
+        content: `${answer}\n\n(Note: AI service temporarily unavailable, using knowledge base)`,
+        citations 
+      };
+      
+      setThreads(prev => prev.map(t => t.id === (active?.id ?? prev[0].id) ? { ...t, messages: [...t.messages, bot] } : t));
+      
+      toast({ 
+        title: 'Using fallback mode', 
+        description: 'AI service unavailable, using local knowledge base.',
+        variant: 'default'
+      });
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (
@@ -170,8 +234,17 @@ const Assistant = () => {
             <div ref={endRef} />
           </div>
           <div className="p-3 border-t flex items-center gap-2">
-            <Input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask a recycling question..." onKeyDown={(e) => { if (e.key === 'Enter') send(); }} />
-            <Button onClick={send} className="gap-1"><Send className="w-4 h-4"/>Send</Button>
+            <Input 
+              value={input} 
+              onChange={e => setInput(e.target.value)} 
+              placeholder="Ask a recycling question..." 
+              onKeyDown={(e) => { if (e.key === 'Enter' && !isTyping) send(); }}
+              disabled={isTyping}
+            />
+            <Button onClick={send} disabled={isTyping} className="gap-1">
+              {isTyping ? <Loader2 className="w-4 h-4 animate-spin"/> : <Send className="w-4 h-4"/>}
+              {isTyping ? 'Thinking...' : 'Send'}
+            </Button>
             <Button variant="outline" onClick={clearThread} className="gap-1"><ShieldAlert className="w-4 h-4"/>Clear</Button>
           </div>
         </Card>
